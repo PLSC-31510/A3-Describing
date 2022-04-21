@@ -1,0 +1,214 @@
+---
+title: "Assignment 3"
+author: "PLSC 21510/31510"
+date: "2022"
+output: html_document
+---
+
+Assigned: April 21, 2022
+Due: May 4, 2022
+
+```{r message=F}
+# quanteda stuff
+require(quanteda)
+require(quanteda.textstats)
+require(quanteda.corpora)
+
+# other stuff
+require(tidyverse) # Data preparation and pipes %>%
+require(ggplot2) # For plotting 
+```
+
+In this assignment, we'll be working with the `data_corpus_sotu` data that come with `quanteda.corpora`.
+
+```{r}
+# read about the corpus
+?data_corpus_sotu 
+
+# save as `corp`
+corp <- data_corpus_sotu
+```
+
+## 1. Working with corpora
+
+### 1.1 
+
+Which SOTU speech was the longest, in terms of number of tokens?
+
+```{r}
+# YOUR CODE HERE
+```
+
+### 1.2
+
+Add a document-level variable (i.e. `docvars`) called `Year` that contains the year the address was delivered.
+
+**Hint**: `Lubridate` is your friend.
+
+```{r}
+# YOUR CODE HERE
+```
+
+### 1.3 
+
+Reshape the corpus such that each document is a paragraph. How many documents do we have?
+
+```{r}
+# YOUR CODE HERE
+```
+
+### 1.4
+
+Subset the corpus to include only speeches delivered after 2000. What *proportion* of the total documents are we left with?
+
+```{r}
+# YOUR CODE HERE
+```
+
+### 1.5
+
+Create a DFM of the original SOTU corpus using the following preprocessing steps: 1) remove punctuation, 2) remove numbers, and 3) remove capitalization. Call it `dfm_sotu`. How many features (aka types) and tokens do we have?
+
+```{r}
+# YOUR CODE HERE
+```
+
+## Heap's Law
+
+Heap’s Law tells us the relationship between number of tokens and number of types. As a reminder, Heap's law is $P = kT^b$, where
+
+- `P` = vocab size (num of types)
+- `T` = number of tokens
+- `k`, `b` are constants. In English, 
+    - 30 <= k <= 100 
+    - 0.4 <= b <= 0.6
+
+### 2.1
+
+Using `dfm_sotu`, plot Heap's law. 
+- X-axis: number of tokens in a document, 
+- Y-axis: number of types in a document. 
+
+**hint**: check out `ntypes()` & `ntokens()` 
+
+**tip**: if you're not familiar with `ggplot`, read [these materials](https://plsc-31101.github.io/course/plotting.html#ggplot2) first.
+
+```{r}
+# YOUR CODE HERE
+```
+
+### 2.2
+
+Add a layer to the plot above with red points showing the *expected* number of types as a function of the number of tokens. Use the following parameters:
+
+k = 5.36
+b = 0.65
+
+```{r}
+# YOUR CODE HERE
+```
+
+### 2.3
+
+Replicate the plot you made above, but this time remove stop words. What do you notice?
+
+```{r}
+# YOUR CODE HERE
+```
+
+### 2.4
+
+In Hipf's law, the number of types grows rapidly as the number of tokens increases, but eventually levels out. In your own words (formulas/equations not necessary) explain why this is so. 
+
+**Hint**: See slide 31 of the "Describing Texts" Slides on the Type-To-Token Ratio.
+
+#### Answer
+
+<Your Answer here>
+
+### BONUS (Extra Credit)
+
+We can estimate `k` and `b` by fitting a linear model, because the relationship between `log(P)` and `log(T)` is linear. Estimate `k` and `b` for the corpus that removes stop words.
+
+```{r}
+# YOUR CODE HERE
+```
+
+
+## Zipf's law
+
+Zipf’s Law tells us about the rank-frequency distribution.
+
+### 3.1
+
+Using `dfm_sotu`, plot Zipf's law. 
+- X-axis: log of ranks 1 through 100
+- Y-axis log of frequency of top 100 terms from the DFM
+
+**Hint**: `topfeaures()`
+
+```{r}
+# YOUR CODE HERE
+```
+
+### 3.2
+
+Replicate the plot above removing stop words. What do you notice?
+
+```{r}
+# YOUR CODE HERE
+```
+
+## 4 Collocations
+
+### 4.1 
+
+Find bigrams collocations in Trump's State of the Union addresses. Display the top 5 (by z-score).
+```{r}
+# YOUR CODE HERE
+```
+
+### 4.2
+
+What happens if you remove stop words? Based on your findings, do you think it's wise to remove stop words in this case?
+
+```{r}
+# YOUR CODE HERE
+```
+
+### 4.3 
+
+Ignoring parts of speech information, almost all bigrams in a corpus occur more often than chance would lead us to expect. Why do you think that is? 
+
+#### Answer 
+<Your Answer Here>
+
+## 5. Readability
+
+### 5.1
+
+Plot the readability of SOTU addresses over time using FRE.
+
+```{r}
+# YOUR CODE HERE
+```
+
+### 5.2 
+
+Amend the plot you made above such that each point is colored according to it's mode of delivery (i.e., spoken or written)
+
+```{r}
+# YOUR CODE HERE
+```
+
+### 5.3 
+
+Democrats are sometimes accused of being "out of touch" with the common man. Fit a simple linear model that tests this hypothesis. Do you find any evidence for it? 
+
+```{r}
+# YOUR CODE HERE
+```
+
+### Bonus 2
+
+Matt Daniels tried to [rank rappers by the size of their vocabulary](https://pudding.cool/projects/vocabulary/index.html). Read his analysis and evaluate one modeling choice he made (what he did, why it matters, if/how you'd do it differently.)
